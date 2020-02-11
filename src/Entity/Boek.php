@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -13,8 +15,7 @@ class Boek
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
-     */
-    private $id;
+     */    private $id;
 
     /**
      * @ORM\Column(type="integer")
@@ -35,6 +36,16 @@ class Boek
      * @ORM\Column(type="float")
      */
     private $Prijs;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Review", mappedBy="boekId")
+     */
+    private $reviews;
+
+    public function __construct()
+    {
+        $this->reviews = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -94,5 +105,40 @@ class Boek
         $this->Prijs = $Prijs;
 
         return $this;
+    }
+
+    /**
+     * @return Collection|Review[]
+     */
+    public function getReviews(): Collection
+    {
+        return $this->reviews;
+    }
+
+    public function addReview(Review $review): self
+    {
+        if (!$this->reviews->contains($review)) {
+            $this->reviews[] = $review;
+            $review->setBoekId($this);
+        }
+
+        return $this;
+    }
+
+    public function removeReview(Review $review): self
+    {
+        if ($this->reviews->contains($review)) {
+            $this->reviews->removeElement($review);
+            // set the owning side to null (unless already changed)
+            if ($review->getBoekId() === $this) {
+                $review->setBoekId(null);
+            }
+        }
+
+        return $this;
+    }
+    public function __toString()
+    {
+        return (string)$this->getId();
     }
 }
