@@ -1,0 +1,11 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}New Boek{% endblock %}
+
+{% block body %}
+    <h1>Create new Boek</h1>
+
+    {{ include('boek/_form.html.twig') }}
+
+    <a href="{{ path('boek_index') }}">back to list</a>
+{% endblock %}
